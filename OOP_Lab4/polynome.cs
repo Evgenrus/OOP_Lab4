@@ -6,78 +6,55 @@ namespace OOP_Lab4
     public class polynome
     {
         private double[] m_data;
-        private int m_size;
+        private int Size => m_data.Length;
 
-        public polynome(int size = 0, double[] data = null)
+        public polynome(int size = 1, double[] data = null)
         {
-            m_size = size;
             if (data != null)
             {
-                m_data = new double[m_size];
+                m_data = new double[size];
                 Array.Copy(data, m_data, data.Length);
             }
             else m_data = null;
         }
         
         public polynome(polynome previous) 
-            : this(previous.m_size, previous.m_data)
+            : this(previous.Size, previous.m_data)
         {}
 
         public static polynome operator +(polynome A, polynome B)
         {
-            if (A.m_size > B.m_size)
-            {
-                Array.Resize(ref B.m_data, A.m_size);
-                B.m_size = A.m_size;
-            } 
-            else
-            {
-                Array.Resize(ref A.m_data, B.m_size);
-                A.m_size = B.m_size;
-            }
-
-            double[] res = new double[A.m_size];
+            double[] res = new double[Math.Max(A.Size, B.Size)];
             
-            for (int i = 0; i < A.m_size; i++)
+            for (int i = 0; i < A.Size; i++)
             {
                 res[i] = A.m_data[i] + B.m_data[i];
             }
 
-            return new polynome(A.m_size, res);
+            return new polynome(A.Size, res);
         }
 
         public static polynome operator -(polynome A, polynome B)
         {
-            if (A.m_size > B.m_size)
-            {
-                Array.Resize(ref B.m_data, A.m_size);
-                B.m_size = A.m_size;
-            } 
-            else
-            {
-                Array.Resize(ref A.m_data, B.m_size);
-                A.m_size = B.m_size;
-            }
-
-            double[] res = new double[A.m_size];
+            double[] res = new double[Math.Max(A.Size, B.Size)];
             
-            for (int i = 0; i < A.m_size; i++)
+            for (int i = 0; i < A.Size; i++)
             {
                 res[i] = A.m_data[i] - B.m_data[i];
             }
 
-            return new polynome(A.m_size, res);
+            return new polynome(A.Size, res);
         }
 
         public static polynome operator *(polynome A, polynome B)
         {
             A.trim(); B.trim();
-            int size = A.m_size + B.m_size;
+            int size = A.Size + B.Size;
             var res = new double[size];
 
-            for (int i = 0; i < A.m_size; i++)
+            for (int i = 0; i < A.Size; i++)
             {
-                for (int j = 0; j < B.m_size; j++)
+                for (int j = 0; j < B.Size; j++)
                 {
                     res[i + j] += A.m_data[i] * B.m_data[j];
                 }
@@ -89,15 +66,13 @@ namespace OOP_Lab4
         public polynome trim()
         {
             int last = 0;
-            for (int i = 0; i < m_size; i++)
+            for (int i = Size - 1; i > 0; i++)
             {
-                if (m_data[i] != 0)
-                    last = i;
+                if (m_data[i] == 0) break;
             }
             
             Array.Resize(ref m_data, last + 1);
-            m_size = last + 1;
-            
+
             return this;
         }
 
@@ -115,7 +90,7 @@ namespace OOP_Lab4
         {
             double res = 0;
 
-            for (int i = 0; i < m_size; i++)
+            for (int i = 0; i < Size; i++)
             {
                 res += m_data[i] * Math.Pow(x, i);
             }
